@@ -1,14 +1,18 @@
 import { MathUtils } from 'three'
 import { ICellState } from '../systems/types'
 import { Cube } from './cube'
+import { podzolTexture } from './textures'
 
 export class GameCube extends Cube {
   private _state: ICellState  = 'empty'
+  private positionAcc: number = 0
 
   constructor(width: number, height: number, depth: number) {
     super(width, height, depth)
 
     this.color = 'white'
+
+    this.material.map = podzolTexture
     
     this.castShadow = true
     this.receiveShadow = true
@@ -20,10 +24,19 @@ export class GameCube extends Cube {
   public set state(s: typeof this._state) {
     if (s === 'food') {
       this.scale.set(.7, .7, .7)
+      this.rotation.set(
+        MathUtils.degToRad(Math.floor(Math.random() * 90)),
+        MathUtils.degToRad(Math.floor(Math.random() * 90)),
+        MathUtils.degToRad(Math.floor(Math.random() * 90))
+      )
     }
     else {
       this.scale.set(1, 1, 1)
       this.rotation.set(0, 0, 0)
+    }
+    if (s !== 'body' && s !== 'head') {
+      this.position.y = 0
+      this.positionAcc = 0
     }
     this._state = s
   }
@@ -33,6 +46,14 @@ export class GameCube extends Cube {
       this.rotation.x += MathUtils.degToRad(60) * time
       this.rotation.y += MathUtils.degToRad(60) * time
       this.rotation.z += MathUtils.degToRad(60) * time
+    }
+    if (this.state === 'body' || this.state === 'head') {
+      this.positionAcc += time
+      this.positionAcc %= 4
+      if (this.positionAcc >= 2)
+        this.position.y = (4 - this.positionAcc) / 5
+      else
+        this.position.y = this.positionAcc / 5
     }
   }
 
