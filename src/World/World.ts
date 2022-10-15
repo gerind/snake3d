@@ -1,6 +1,7 @@
 import { Clock, PerspectiveCamera, WebGLRenderer } from 'three'
 import { GameCube } from './components/gamecube'
 import { SnakeLight } from './components/light'
+import { podzolTexture } from './components/textures'
 import { createCamera } from './systems/camera'
 import { cellSize, lightHeight } from './systems/constants'
 import { createRenderer } from './systems/renderer'
@@ -37,6 +38,17 @@ export class World {
         this.cubes[i + 5][j + 5] = cube
       }
     }
+
+    window.addEventListener('keydown', event => {
+      if (event.code === 'KeyT') {
+        for (let i = -5; i <= 5; ++i) {
+          for (let j = -5; j <= 5; ++j) {
+            this.cubes[i + 5][j + 5].material.map = this.cubes[i + 5][j + 5].material.map ? null : podzolTexture
+            this.cubes[i + 5][j + 5].material.needsUpdate = true
+          }
+        }
+      }
+    })
   
     const light = new SnakeLight(16)
     light.position.set(0, lightHeight, 0)

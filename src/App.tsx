@@ -16,6 +16,7 @@ function App() {
   return <div className="container" ref={ containerRef }>
     <div className="fps">FPS: {fps}</div>
     <div className="shadow_info">Press E to turn shadows on/off</div>
+    <div className="texture_info">Press T to turn textures on/off</div>
   </div>
 }
 

@@ -11,8 +11,6 @@ export class GameCube extends Cube {
     super(width, height, depth)
 
     this.color = 'white'
-
-    this.material.map = podzolTexture
     
     this.castShadow = true
     this.receiveShadow = true
@@ -34,7 +32,7 @@ export class GameCube extends Cube {
       this.scale.set(1, 1, 1)
       this.rotation.set(0, 0, 0)
     }
-    if (s !== 'body' && s !== 'head') {
+    if (s !== 'body' && s !== 'head' && s !== 'dead') {
       this.position.y = 0
       this.positionAcc = 0
     }
@@ -51,9 +49,16 @@ export class GameCube extends Cube {
       this.positionAcc += time
       this.positionAcc %= 4
       if (this.positionAcc >= 2)
-        this.position.y = (4 - this.positionAcc) / 5
+        this.position.y = (4 - this.positionAcc) / 30
       else
-        this.position.y = this.positionAcc / 5
+        this.position.y = this.positionAcc / 30
+    }
+    if (this.state === 'dead') {
+      if (this.positionAcc < 2)
+        this.positionAcc = 4 - this.positionAcc
+      this.positionAcc += time
+      this.positionAcc = Math.min(this.positionAcc, 4)
+      this.position.y = (4 - this.positionAcc) / 30
     }
   }
 
